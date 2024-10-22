@@ -4,7 +4,7 @@ import { FormField } from "@/types/form-type";
 export function generateSchema(formObj: FormField[]) {
   const schemaObj: { [key: string]: z.ZodString } = {};
 
-  formObj.forEach(({ id, validation }) => {
+  formObj.forEach(({ name, validation }) => {
     let fieldSchema = z.string();
     if (validation.type === "string") {
       fieldSchema = z.string();
@@ -16,7 +16,7 @@ export function generateSchema(formObj: FormField[]) {
     } else if (validation.type === "email") {
       fieldSchema = z.string().email({ message: validation.message });
     }
-    schemaObj[id] = fieldSchema;
+    schemaObj[name] = fieldSchema;
   });
 
   return z

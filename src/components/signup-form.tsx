@@ -12,6 +12,14 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { generateSchema } from "@/lib/schema-utils";
 import { formObj } from "@/data/form-obj";
 
@@ -43,20 +51,57 @@ function SignupForm() {
       <h3>Signup Form</h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {formObj.map(({ id, label, placeholder, type }) => (
+          {formObj.map(({ id, name, label, placeholder, type, input }) => (
             <FormField
               key={id}
               control={form.control}
-              name={id}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{label}</FormLabel>
-                  <FormControl>
-                    <Input type={type} placeholder={placeholder} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              name={name}
+              render={({ field }) => {
+                let inputControl: JSX.Element | null = null;
+
+                switch (input.type) {
+                  case "input":
+                    inputControl = (
+                      <FormControl>
+                        <Input
+                          type={type}
+                          placeholder={placeholder}
+                          {...field}
+                        />
+                      </FormControl>
+                    );
+                    break;
+                  case "select":
+                    inputControl = (
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={placeholder} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {input?.values?.map((val) => (
+                            <SelectItem key={val.value} value={val.value}>
+                              {val.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    );
+                    break;
+                }
+
+                return (
+                  <FormItem>
+                    <FormLabel>{label}</FormLabel>
+                    {inputControl}
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
           ))}
 

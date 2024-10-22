@@ -1,9 +1,29 @@
+// export type InputType = "input" | "select" | "radio" | "checkbox";
+// export type FieldType = "text" | "email" | "password" | "date";
+// export type ValidationType = "string" | "email";
+export enum InputType {
+  Input = "input",
+  Select = "select",
+  Radio = "radio",
+  Checkbox = "checkbox",
+}
+
+export enum FieldType {
+  Text = "test",
+  Email = "email",
+  Password = "password",
+  Date = "date",
+}
+
+export enum ValidationType {
+  String = "string",
+  Email = "email",
+}
+
 export type FormValidation = {
-  type: "string" | "email";
-  min?: {
-    value: number;
-    message: string;
-  };
+  type: ValidationType;
+  min?: { value: number; message: string };
+  max?: { value: number; message: string };
   message?: string;
   refine?: {
     condition: string[];
@@ -19,6 +39,10 @@ export type FormField = {
   label: string;
   name: string;
   placeholder: string;
-  type: "text" | "email" | "password";
+  input: {
+    type: InputType;
+    values?: Array<{ value: string; label: string }>;
+  };
+  type?: FieldType;
   validation: FormValidation;
 };

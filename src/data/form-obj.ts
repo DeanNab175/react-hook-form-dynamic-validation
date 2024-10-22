@@ -1,4 +1,9 @@
-import { FormField } from "@/types/form-type";
+import {
+  FieldType,
+  FormField,
+  InputType,
+  ValidationType,
+} from "@/types/form-type";
 
 export const formObj: FormField[] = [
   {
@@ -7,12 +12,19 @@ export const formObj: FormField[] = [
     label: "Username",
     name: "username",
     placeholder: "Username",
-    type: "text",
+    input: {
+      type: InputType.Input,
+    },
+    type: FieldType.Text,
     validation: {
-      type: "string",
+      type: ValidationType.String,
       min: {
         value: 2,
         message: "Username must be at least 2 characters.",
+      },
+      max: {
+        value: 8,
+        message: "Username must not be more than 8 characters.",
       },
     },
   },
@@ -22,9 +34,12 @@ export const formObj: FormField[] = [
     label: "First Name",
     name: "firstName",
     placeholder: "First Name",
-    type: "text",
+    input: {
+      type: InputType.Input,
+    },
+    type: FieldType.Text,
     validation: {
-      type: "string",
+      type: ValidationType.String,
       min: {
         value: 2,
         message: "First name must be at least 2 characters.",
@@ -37,9 +52,12 @@ export const formObj: FormField[] = [
     label: "Last Name",
     name: "lastName",
     placeholder: "Last Name",
-    type: "text",
+    input: {
+      type: InputType.Input,
+    },
+    type: FieldType.Text,
     validation: {
-      type: "string",
+      type: ValidationType.String,
       min: {
         value: 2,
         message: "Last name must be at least 2 characters.",
@@ -52,9 +70,12 @@ export const formObj: FormField[] = [
     label: "Email",
     name: "email",
     placeholder: "Email",
-    type: "email",
+    input: {
+      type: InputType.Input,
+    },
+    type: FieldType.Email,
     validation: {
-      type: "email",
+      type: ValidationType.Email,
       message: "Invalid email.",
     },
   },
@@ -64,9 +85,12 @@ export const formObj: FormField[] = [
     label: "Password",
     name: "password",
     placeholder: "Password",
-    type: "password",
+    input: {
+      type: InputType.Input,
+    },
+    type: FieldType.Password,
     validation: {
-      type: "string",
+      type: ValidationType.String,
       min: {
         value: 6,
         message: "Password must be at least 6 characters.",
@@ -79,14 +103,44 @@ export const formObj: FormField[] = [
     label: "Confirm Password",
     name: "confirmPassword",
     placeholder: "Confirm Password",
-    type: "password",
+    input: {
+      type: InputType.Input,
+    },
+    type: FieldType.Password,
     validation: {
-      type: "string",
+      type: ValidationType.String,
       refine: {
         condition: ["confirmPassword", "password"],
         operator: "equal",
         message: "Password do not match",
         path: ["confirmPassword"],
+      },
+    },
+  },
+  {
+    defaultValue: "",
+    id: "gender",
+    label: "Gender",
+    name: "gender",
+    placeholder: "Select a gender",
+    input: {
+      type: InputType.Select,
+      values: [
+        {
+          value: "male",
+          label: "Male",
+        },
+        {
+          value: "female",
+          label: "Female",
+        },
+      ],
+    },
+    validation: {
+      type: ValidationType.String,
+      min: {
+        value: 1,
+        message: "Gender is required.",
       },
     },
   },
