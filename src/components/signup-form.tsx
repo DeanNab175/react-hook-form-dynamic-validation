@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { /* ControllerRenderProps, */ useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -10,39 +10,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../components/ui/form";
+} from "./ui/form";
 import { Input } from "@/components/ui/input";
+import { generateSchema } from "@/lib/schema-utils";
+import { formObj } from "@/data/form-obj";
 
-const signupFormSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  firstName: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: z.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Invalid email.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-});
-
+const signupFormSchema = generateSchema(formObj);
 type SignupFormType = z.infer<typeof signupFormSchema>;
+
+const formDefaultValues = formObj.reduce(
+  (acc: { [key: string]: string }, { id, defaultValue }) => {
+    acc[id] = defaultValue;
+    return acc;
+  },
+  {}
+);
+console.log("signupFormSchema", signupFormSchema);
+console.log("formDefaultValues", formDefaultValues);
 
 function SignupForm() {
   const form = useForm<SignupFormType>({
     resolver: zodResolver(signupFormSchema),
-    defaultValues: {
-      username: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-    },
+    defaultValues: formDefaultValues,
   });
 
   const onSubmit = (values: SignupFormType) => {
@@ -50,82 +39,31 @@ function SignupForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({
-            field,
-          }: {
-            field: ControllerRenderProps<SignupFormType>;
-          }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="Username" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="max-w-xl mx-auto">
+      <h3>Signup Form</h3>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {formObj.map(({ id, label, placeholder, type }) => (
+            <FormField
+              key={id}
+              control={form.control}
+              name={id}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{label}</FormLabel>
+                  <FormControl>
+                    <Input type={type} placeholder={placeholder} {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
 
-        <FormField
-          control={form.control}
-          name="firstName"
-          render={({
-            field,
-          }: {
-            field: ControllerRenderProps<SignupFormType>;
-          }) => (
-            <FormItem>
-              <FormLabel>First Name</FormLabel>
-              <FormControl>
-                <Input placeholder="First Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({
-            field,
-          }: {
-            field: ControllerRenderProps<SignupFormType>;
-          }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Last Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({
-            field,
-          }: {
-            field: ControllerRenderProps<SignupFormType>;
-          }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="Email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+    </div>
   );
 }
 
